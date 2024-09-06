@@ -7,61 +7,15 @@
 
 import Foundation
 
-enum TemperatureUnit: String {
+enum AllUnit: String, CaseIterable {
+    case none = "None"
+    
+    // Temperature Units
     case celsius = "Celsius"
     case fahrenheit = "Fahrenheit"
     case kelvin = "Kelvin"
-
-    // Convert temperature to Celsius
-    func toCelsius(_ value: Double) -> Double {
-        switch self {
-        case .celsius:
-            return value
-        case .fahrenheit:
-            return (value - 32) * 5 / 9
-        case .kelvin:
-            return value - 273.15
-        }
-    }
-
-    // Convert temperature to Fahrenheit
-    func toFahrenheit(_ value: Double) -> Double {
-        switch self {
-        case .celsius:
-            return (value * 9 / 5) + 32
-        case .fahrenheit:
-            return value
-        case .kelvin:
-            return (value - 273.15) * 9 / 5 + 32
-        }
-    }
-
-    // Convert temperature to Kelvin
-    func toKelvin(_ value: Double) -> Double {
-        switch self {
-        case .celsius:
-            return value + 273.15
-        case .fahrenheit:
-            return (value - 32) * 5 / 9 + 273.15
-        case .kelvin:
-            return value
-        }
-    }
-
-    // Convert from one temperature unit to another
-    func convert(_ value: Double, to targetUnit: TemperatureUnit) -> Double {
-        switch targetUnit {
-        case .celsius:
-            return self.toCelsius(value)
-        case .fahrenheit:
-            return self.toFahrenheit(value)
-        case .kelvin:
-            return self.toKelvin(value)
-        }
-    }
-}
-
-enum LengthUnit: String {
+    
+    // Length Units
     case meter = "Meter"
     case kilometer = "Kilometer"
     case centimeter = "Centimeter"
@@ -70,8 +24,85 @@ enum LengthUnit: String {
     case foot = "Foot"
     case yard = "Yard"
     case mile = "Mile"
+    
+    // Time Units
+    case second = "Second"
+    case minute = "Minute"
+    case hour = "Hour"
+    case day = "Day"
+    case week = "Week"
+    case month = "Month"
+    case year = "Year"
+    
+    // Volume Units
+    case liter = "Liter"
+    case milliliter = "Milliliter"
+    case cubicMeter = "Cubic Meter"
+    case gallon = "Gallon"
+    case quart = "Quart"
+    case pint = "Pint"
+    case cup = "Cup"
+    case fluidOunce = "Fluid Ounce"
+    case tablespoon = "Tablespoon"
+    case teaspoon = "Teaspoon"
+    
+    // Convert temperature to Celsius
+    private func toCelsius(_ value: Double) -> Double {
+        switch self {
+        case .celsius:
+            return value
+        case .fahrenheit:
+            return (value - 32) * 5 / 9
+        case .kelvin:
+            return value - 273.15
+        default:
+            return 0.0
+        }
+    }
 
-    func toMeters(_ value: Double) -> Double {
+    // Convert temperature to Fahrenheit
+    private func toFahrenheit(_ value: Double) -> Double {
+        switch self {
+        case .celsius:
+            return (value * 9 / 5) + 32
+        case .fahrenheit:
+            return value
+        case .kelvin:
+            return (value - 273.15) * 9 / 5 + 32
+        default:
+            return 0.0
+        }
+    }
+
+    // Convert temperature to Kelvin
+    private func toKelvin(_ value: Double) -> Double {
+        switch self {
+        case .celsius:
+            return value + 273.15
+        case .fahrenheit:
+            return (value - 32) * 5 / 9 + 273.15
+        case .kelvin:
+            return value
+        default:
+            return 0.0
+        }
+    }
+
+    // Convert from one temperature unit to another
+    func convertTemperature(_ value: Double, to targetUnit: AllUnit) -> Double {
+        switch targetUnit {
+        case .celsius:
+            return self.toCelsius(value)
+        case .fahrenheit:
+            return self.toFahrenheit(value)
+        case .kelvin:
+            return self.toKelvin(value)
+        default:
+            return 0.0
+        }
+    }
+    
+    private func toMeters(_ value: Double) -> Double {
         switch self {
         case .meter:
             return value
@@ -89,10 +120,12 @@ enum LengthUnit: String {
             return value * 0.9144
         case .mile:
             return value * 1609.34
+        default:
+            return 0.0
         }
     }
 
-    func fromMeters(_ value: Double) -> Double {
+    private func fromMeters(_ value: Double) -> Double {
         switch self {
         case .meter:
             return value
@@ -110,25 +143,17 @@ enum LengthUnit: String {
             return value / 0.9144
         case .mile:
             return value / 1609.34
+        default:
+            return 0.0
         }
     }
 
-    func convert(_ value: Double, to targetUnit: LengthUnit) -> Double {
+    func convertLength(_ value: Double, to targetUnit: AllUnit) -> Double {
         let valueInMeters = self.toMeters(value)
         return targetUnit.fromMeters(valueInMeters)
     }
-}
-
-enum TimeUnit: String {
-    case second = "Second"
-    case minute = "Minute"
-    case hour = "Hour"
-    case day = "Day"
-    case week = "Week"
-    case month = "Month"
-    case year = "Year"
-
-    func toSeconds(_ value: Double) -> Double {
+    
+    private func toSeconds(_ value: Double) -> Double {
         switch self {
         case .second:
             return value
@@ -144,10 +169,12 @@ enum TimeUnit: String {
             return value * 2592000 // Approximate (30 days)
         case .year:
             return value * 31536000 // Approximate (365 days)
+        default:
+            return 0.0
         }
     }
 
-    func fromSeconds(_ value: Double) -> Double {
+    private func fromSeconds(_ value: Double) -> Double {
         switch self {
         case .second:
             return value
@@ -163,28 +190,17 @@ enum TimeUnit: String {
             return value / 2592000 // Approximate (30 days)
         case .year:
             return value / 31536000 // Approximate (365 days)
+        default:
+            return 0.0
         }
     }
 
-    func convert(_ value: Double, to targetUnit: TimeUnit) -> Double {
+    func convertTime(_ value: Double, to targetUnit: AllUnit) -> Double {
         let valueInSeconds = self.toSeconds(value)
         return targetUnit.fromSeconds(valueInSeconds)
     }
-}
-
-enum VolumeUnit: String {
-    case liter = "Liter"
-    case milliliter = "Milliliter"
-    case cubicMeter = "Cubic Meter"
-    case gallon = "Gallon"
-    case quart = "Quart"
-    case pint = "Pint"
-    case cup = "Cup"
-    case fluidOunce = "Fluid Ounce"
-    case tablespoon = "Tablespoon"
-    case teaspoon = "Teaspoon"
-
-    func toLiters(_ value: Double) -> Double {
+    
+    private func toLiters(_ value: Double) -> Double {
         switch self {
         case .liter:
             return value
@@ -206,10 +222,12 @@ enum VolumeUnit: String {
             return value * 0.0147868
         case .teaspoon:
             return value * 0.00492892
+        default:
+            return 0.0
         }
     }
 
-    func fromLiters(_ value: Double) -> Double {
+    private func fromLiters(_ value: Double) -> Double {
         switch self {
         case .liter:
             return value
@@ -231,10 +249,12 @@ enum VolumeUnit: String {
             return value / 0.0147868
         case .teaspoon:
             return value / 0.00492892
+        default:
+            return 0.0
         }
     }
 
-    func convert(_ value: Double, to targetUnit: VolumeUnit) -> Double {
+    func convertVolume(_ value: Double, to targetUnit: AllUnit) -> Double {
         let valueInLiters = self.toLiters(value)
         return targetUnit.fromLiters(valueInLiters)
     }
